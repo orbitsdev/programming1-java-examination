@@ -40,7 +40,7 @@ class Main {
                             .showInputDialog("Do you want to try login again?  Pres any key to continue and E to stop");
 
                     if (response == null) {
-                        System.out.println("CANCELD");
+                        System.out.println("canceld");
                     } else {
 
                         if (response.toLowerCase().equals("e")) {
@@ -86,8 +86,201 @@ class Main {
 
     }
 
-    public static void newLoan() {
-        System.out.println("new Loan");
+    static boolean processNewLoan() {
+
+        boolean continueNewLoanProcess = true;
+
+        boolean hasError = false;
+
+        String id_number = JOptionPane.showInputDialog("Enter Id ");
+        String first_name = JOptionPane.showInputDialog("Enter First Name");
+        String middle_name = JOptionPane.showInputDialog("Enter Middle Name");
+        String last_name = JOptionPane.showInputDialog("Enter Last Name");
+        String age = JOptionPane.showInputDialog("Enter age");
+        double salary = Double.parseDouble(JOptionPane.showInputDialog("Enter Salary"));
+        int getIsEmployed = JOptionPane.showConfirmDialog(null, "Are you employed? ", "Validatiing",
+                JOptionPane.YES_NO_OPTION);
+        boolean isEmployed = false;
+
+        if (getIsEmployed == 0) {
+            isEmployed = true;
+        }
+        if (getIsEmployed == 1) {
+            isEmployed = false;
+        }
+
+        double tobe_borrowed = Double.parseDouble(JOptionPane.showInputDialog("Enter Amount to borrow"));
+        int payment_terms = Integer.parseInt(JOptionPane.showInputDialog("Payment terms "));
+
+        int getIsPayed = JOptionPane.showConfirmDialog(null, "Pay the loan ", "Validatiing",
+                JOptionPane.YES_NO_OPTION);
+
+        boolean isPayed = false;
+        if (getIsPayed == 0) {
+            isPayed = true;
+        }
+        if (getIsPayed == 1) {
+            isPayed = false;
+        }
+        if (isEmployed == false) {
+            showWarning("Sorry You Cannot Borrowed Money for now due to you are not employed. ");
+            continueNewLoanProcess = false;
+            hasError = true;
+        }
+
+        if (isEmployed) {
+
+            if (Math.round(salary) < 10000) {
+                showWarning(
+                        "Sorry you cannot borrow money for now due to your income. 10000 was the minimum requires for this tranactions");
+                continueNewLoanProcess = false;
+                hasError = true;
+
+            }
+
+        }
+
+        if (Math.round(tobe_borrowed) < 5000) {
+
+            showWarning("Borrowed Ammount Should Be Greater than 5000 ");
+            hasError = true;
+        }
+
+        if (payment_terms < 5) {
+            showWarning("Invalid Payment terms");
+            continueNewLoanProcess = false;
+            hasError = true;
+
+        }
+
+        if (hasError == false) {
+            Loan loan = new Loan(id_number,
+                    first_name,
+                    last_name,
+                    middle_name,
+                    age,
+                    salary,
+                    isEmployed,
+                    tobe_borrowed,
+                    payment_terms,
+                    isPayed);
+
+            loanDatabase.add(loan);
+
+            String details = getLoan(tobe_borrowed, payment_terms);
+            showDetails(details);
+            // continueNewLoanProcess = false;
+            showDetails("Transaction Complete Loan was recorded");
+
+        } else {
+
+            showWarning("Transaction Failed");
+        }
+
+        return continueNewLoanProcess;
+    }
+
+    static boolean renewProcessLoan() {
+        boolean continueNewLoanProcess = true;
+        int validate_number = 3;
+        boolean isValidating = true;
+        boolean hasError = false;
+        while (isValidating) {
+            String response = JOptionPane
+                    .showInputDialog("Enter ID NUMBER ,  if you wish to do other transaction press e");
+            System.out.println(response);
+
+            if (response == null) {
+                showDetails("IF you wish to do new transaction press e to go back");
+            } else {
+                if (response.toLowerCase().equals("e")) {
+                    isValidating = false;
+                    // continueNewLoanProcess = false;
+                    System.out.println("Programm Exit");
+                } else {
+
+                    if (loanDatabase.size() > 0) {
+                        System.out.println(loanDatabase.get(0).id_number);
+                        System.out.println(response);
+
+                        for (int i = 0; i < loanDatabase.size(); i++) {
+                            if (response.equals(loanDatabase.get(i).id_number)) {
+
+                                System.out.println(loanDatabase.get(i).isPayed);
+
+                                if (loanDatabase.get(i).isPayed) {
+
+                                    double tobe_borrowed = Double
+                                            .parseDouble(JOptionPane.showInputDialog("Enter Amount to borrow"));
+                                    if (Math.round(tobe_borrowed) < 5000) {
+
+                                        showWarning("Borrowed Ammount Should Be Greater than 5000 ");
+                                        // continueNewLoanProcess = false;
+                                        hasError = true;
+
+                                    }
+
+                                    int payment_terms = Integer.parseInt(JOptionPane.showInputDialog("Payment terms "));
+                                    if (payment_terms < 5) {
+                                        showWarning("Invalid Payment terms");
+                                        // continueNewLoanProcess = false;
+
+                                        hasError = true;
+
+                                    }
+
+                                    if (!hasError) {
+
+                                        String details = getLoan(tobe_borrowed, payment_terms);
+                                        showDetails(details);
+                                        showDetails("Transaction Complete Loan ");
+                                        isValidating = false;
+
+                                    }
+
+                                } else {
+
+                                    validate_number--;
+                                    if (validate_number != 0) {
+
+                                        showWarning("Loan was not paid yet you cannot borrow money");
+                                        showWarning("Press e to change transaction");
+                                    } else {
+                                        showWarning(
+                                                " Multiple attemp is prohibeted we are going to close the programm now  ");
+                                        isValidating = false;
+                                        continueNewLoanProcess = false;
+
+                                    }
+                                }
+
+                            } else {
+                                if (i == loanDatabase.size()) {
+
+                                    showDetails("Invalid Response");
+                                }
+                            }
+                        }
+
+                    } else {
+                        validate_number--;
+                        if (validate_number != 0) {
+
+                            showWarning("Loan Record is empty if you wish to do new transcction press e to go backe");
+                        } else {
+                            showWarning(" Multiple attemp is prohibeted we are going to close the programm now  ");
+                            isValidating = false;
+                            continueNewLoanProcess = false;
+
+                        }
+
+                    }
+
+                }
+            }
+        }
+
+        return continueNewLoanProcess;
     }
 
     static boolean tryTransaction() {
@@ -97,105 +290,14 @@ class Main {
         if (response == null) {
             showWarning("If you wish to cancel transaction  Press e");
         } else {
+
             if (response.toLowerCase().equals("n")) {
-
-                Boolean hasError = false;
-
-                String id_number = JOptionPane.showInputDialog("Enter Id ");
-                String first_name = JOptionPane.showInputDialog("Enter First Name");
-                String middle_name = JOptionPane.showInputDialog("Enter Middle Name");
-                String last_name = JOptionPane.showInputDialog("Enter Last Name");
-                int age = Integer.parseInt(JOptionPane.showInputDialog("Enter age"));
-                double salary = Double.parseDouble(JOptionPane.showInputDialog("Enter Salary"));
-                int getIsEmployed = JOptionPane.showConfirmDialog(null, "Are you employed? ", "Validatiing",
-                        JOptionPane.YES_NO_OPTION);
-                boolean isEmployed = false;
-
-                if (getIsEmployed == 1) {
-                    isEmployed = false;
-                }
-
-                if (getIsEmployed == 0) {
-                    isEmployed = true;
-                }
-
-                double tobe_borrowed = Double.parseDouble(JOptionPane.showInputDialog("Enter Amount to borrow"));
-                int payment_terms = Integer.parseInt(JOptionPane.showInputDialog("Payment terms "));
-
-
-                boolean isPayed = false;
-              
-
-                if (isEmployed == false) {
-                    showWarning("Sorry You Cannot Borrowed Mony ");
-                    continueProcess = false;
-                    hasError = true;
-                }
-
-                if (isEmployed) {
-
-                    if (Math.round(salary) < 10000) {
-                        showWarning("You cannot borrrow  Money ");
-                        continueProcess = false;
-                        hasError = true;
-
-                    }
-
-                }
-
-                if (Math.round(tobe_borrowed) < 5000) {
-
-                    showWarning("Borrowed Ammount Should Be Greater than 5000 ");
-                    hasError = true;
-                }
-
-                if (payment_terms < 5) {
-                    showWarning("Invalid Payment terms");
-                    continueProcess = false;
-                    hasError = true;
-
-                }
-
-                if (hasError == false) {
-
-                    Loan loan = new Loan(id_number,
-                            first_name,
-                            last_name,
-                            middle_name,
-                            age,
-                            salary,
-                            isEmployed,
-                            tobe_borrowed,
-                            payment_terms,
-                            isPayed);
-
-                            loanDatabase.add(loan);
-
-                            System.out.println(loanDatabase.size());
-
-
-                    System.out.println("id_number" + loanDatabase.get(0).id_number);
-                    System.out.println("first_name" + loanDatabase.get(0).first_name);
-                    System.out.println("last_name" + loanDatabase.get(0).last_name);
-                    System.out.println("middle_name" + loanDatabase.get(0).middle_name);
-                    System.out.println("age" + loanDatabase.get(0).age);
-                    System.out.println("salary" + loanDatabase.get(0).salary);
-                    System.out.println("isEmployed" + loanDatabase.get(0).isEmployed);
-                    System.out.println("payment" + loanDatabase.get(0).payment_terms);
-                    System.out.println("isPayed" + loanDatabase.get(0).isPayed);
-
-                    String details = getLoan(tobe_borrowed, payment_terms);
-                    showDetails(details);
-                    continueProcess = false;
-                    showDetails("Transaction Complete");
-
-                } else {
-
-                    showWarning("Transaction Failed");
-                }
+                return continueProcess = processNewLoan();
 
             } else if (response.toLowerCase().equals("r")) {
-                System.out.println("RewnewEw Loand");
+
+                return continueProcess = renewProcessLoan();
+
             } else if (response.toLowerCase().equals("e")) {
 
                 String decision = JOptionPane.showInputDialog(

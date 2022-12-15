@@ -5,13 +5,13 @@ public class Loan {
     public String first_name;
     public String last_name;
     public String middle_name;
-    public int age;
+    public String age;
     public double salary;
     public boolean isEmployed;
     public double borrowed;
     public int payment_terms;
     public boolean isPayed;
-    public Loan(String id_number, String first_name, String last_name, String middle_name, int age, double salary,
+    public Loan(String id_number, String first_name, String last_name, String middle_name, String age, double salary,
             boolean isEmployed, double borrowed, int payment_terms, boolean isPayed) {
         this.id_number = id_number;
         this.first_name = first_name;
@@ -24,7 +24,7 @@ public class Loan {
         this.payment_terms = payment_terms;
         this.isPayed = isPayed;
     }
-
+   
     
 
 }
