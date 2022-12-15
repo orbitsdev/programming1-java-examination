@@ -10,8 +10,6 @@ class Main {
 
     public static void main(String[] args) {
 
-        Scanner input = new Scanner(System.in);
-
         // company interest
 
         // create 3 ccount
