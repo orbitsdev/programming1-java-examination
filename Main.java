@@ -204,7 +204,7 @@ class Main {
 
         // KEEP TRANSACTION RUNNING IF TRUE
         while (isValidating) {
-
+            boolean haValidationError = false;
             // GET ID NUMBER
             String response = JOptionPane.showInputDialog(
                     "Enter ID NUMBER ,  if you wish to do other transaction press e");
@@ -239,24 +239,25 @@ class Main {
                                     if (Math.round(tobe_borrowed) < 5000) {
                                         showWarning(
                                                 "Borrowed Ammount Should Be Greater than 5000 ");
-                                        hasError = true;
+                                        haValidationError = true;
                                     }
-                                    // GET PAYMENT TERMS
-                                    int payment_terms = Integer.parseInt(
-                                            JOptionPane.showInputDialog("Payment terms "));
-                                    // SHOW PROPMS IF LESS THAN %
-                                    if (payment_terms < 5) {
-                                        showWarning("Invalid Payment terms");
-                                        hasError = true;
-                                    }
-                                    // IF NO ERROR SHOW COMPUTED LOAN
-                                    if (!hasError) {
-                                        String details = getLoan(tobe_borrowed, payment_terms);
-                                        showDetails(details);
-                                        showDetails("Transaction Complete Loan ");
-                                        isValidating = false;
+                                    if (!haValidationError) {
+                                        int payment_terms = Integer.parseInt(
+                                                JOptionPane.showInputDialog("Payment terms "));
+                                        if (payment_terms < 5) {
+                                            showWarning("Invalid Payment terms");
+                                            haValidationError = true;
+                                        }
+                                        if (!haValidationError) {
 
+                                            String details = getLoan(tobe_borrowed, payment_terms);
+                                            showDetails(details);
+                                            showDetails("Transaction Complete Loan ");
+                                            isValidating = false;
+                                        }
                                     }
+
+
 
                                 } else {
                                     // EXIT PROGRAMM WHEN USER INTER INVALID OR TRYING TO ACCESS
