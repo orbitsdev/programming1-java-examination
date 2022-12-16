@@ -240,8 +240,7 @@ class Main {
                                         showWarning(
                                                 "Borrowed Ammount Should Be Greater than 5000 ");
                                         hasError = true;
-                                    }e
-                                    
+                                    }
                                     // GET PAYMENT TERMS
                                     int payment_terms = Integer.parseInt(
                                             JOptionPane.showInputDialog("Payment terms "));
