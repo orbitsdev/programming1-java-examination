@@ -240,7 +240,8 @@ class Main {
                                         showWarning(
                                                 "Borrowed Ammount Should Be Greater than 5000 ");
                                         hasError = true;
-                                    }
+                                    }e
+                                    
                                     // GET PAYMENT TERMS
                                     int payment_terms = Integer.parseInt(
                                             JOptionPane.showInputDialog("Payment terms "));
@@ -282,9 +283,23 @@ class Main {
 
                             } else {
                                 // IF ID NUMBER DOESNT EXISt
-                                if (i == loanDatabase.size()) {
-                                    showDetails("Invalid Response");
+
+                                validate_number--;
+                                if (validate_number != 0) {
+
+                                    showWarning("Invalid Response");
+                                    hasError = true;
+
+                                } else {
+                                    showWarning(
+                                            " Multiple attemp is prohibited we are going to close the programm now  ");
+                                    isValidating = false;
+                                    continueNewLoanProcess = false;
+
                                 }
+
+
+
                             }
                         }
 
